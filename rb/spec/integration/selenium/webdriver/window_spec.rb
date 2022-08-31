@@ -61,6 +61,12 @@ module Selenium
       end
 
       it 'sets the position of the current window' do
+        # Latest Firefox is opening at full resolution
+        if Platform.linux?
+          size = window.size
+          window.size = Dimension.new(size.width - 20, size.height - 20)
+        end
+
         pos = window.position
 
         target_x = pos.x + 10
@@ -87,6 +93,12 @@ module Selenium
       end
 
       it 'sets the rect of the current window' do
+        # Latest Firefox is opening at full resolution
+        if Platform.linux?
+          size = window.size
+          window.size = Dimension.new(size.width - 20, size.height - 20)
+        end
+
         rect = window.rect
 
         target_x = rect.x + 10
