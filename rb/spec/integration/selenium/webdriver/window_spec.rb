@@ -26,9 +26,15 @@ module Selenium
         avail_width = driver.execute_script('return window.screen.availWidth')
         avail_height = driver.execute_script('return window.screen.availHeight')
 
+        orig_rect = window.rect
         new_rect = Rectangle.new(50, 50, avail_width - 150, avail_height - 150)
         window.rect = new_rect
-        wait.until { window.rect == new_rect }
+        begin
+          wait.until { window.rect == new_rect }
+        rescue Selenium::WebDriver::Error::TimeoutError
+          raise "original: #{orig_rect}; new: #{new_rect}; current: #{window.rect}"
+        end
+
       end
 
       after do
