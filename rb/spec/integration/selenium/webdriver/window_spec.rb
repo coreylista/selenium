@@ -62,10 +62,7 @@ module Selenium
 
       it 'sets the position of the current window' do
         # Latest Firefox is opening at full resolution
-        if Platform.linux?
-          size = window.size
-          window.size = Dimension.new(size.width - 20, size.height - 20)
-        end
+        change_rect if Platform.linux?
 
         pos = window.position
 
@@ -93,11 +90,7 @@ module Selenium
       end
 
       it 'sets the rect of the current window' do
-        # Latest Firefox is opening at full resolution
-        if Platform.linux?
-          size = window.size
-          window.size = Dimension.new(size.width - 20, size.height - 20)
-        end
+        change_rect if Platform.linux?
 
         rect = window.rect
 
@@ -152,6 +145,12 @@ module Selenium
         window.minimize
         expect(driver.execute_script('return document.hidden;')).to be true
       end
+    end
+
+    def change_rect
+      original_rect = window.rect
+      window.rect = Rectangle.new(rect.x + 10, rect.y + 10, rect.height - 20, rect.width - 20)
+      wait.until { window.rect != original_rect }
     end
   end # WebDriver
 end # Selenium
