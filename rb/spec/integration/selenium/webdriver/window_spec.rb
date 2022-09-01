@@ -22,6 +22,15 @@ require_relative 'spec_helper'
 module Selenium
   module WebDriver
     describe Window do
+      def change_rect
+        avail_width = driver.execute_script('return window.screen.availWidth')
+        avail_height = driver.execute_script('return window.screen.availHeight')
+
+        new_rect = Rectangle.new(50, 50, avail_width - 150, avail_height - 150)
+        window.rect = new_rect
+        wait.until { window.rect == new_rect }
+      end
+
       after do
         sleep 1 if ENV['TRAVIS']
         quit_driver
@@ -61,7 +70,6 @@ module Selenium
       end
 
       it 'sets the position of the current window' do
-        # Latest Firefox is opening at full resolution
         change_rect if Platform.linux?
 
         pos = window.position
@@ -145,12 +153,6 @@ module Selenium
         window.minimize
         expect(driver.execute_script('return document.hidden;')).to be true
       end
-    end
-
-    def change_rect
-      original_rect = window.rect
-      window.rect = Rectangle.new(rect.x + 10, rect.y + 10, rect.height - 20, rect.width - 20)
-      wait.until { window.rect != original_rect }
     end
   end # WebDriver
 end # Selenium
